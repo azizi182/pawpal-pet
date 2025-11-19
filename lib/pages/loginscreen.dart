@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:pawpal_project_301310/class/user.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
 import 'package:pawpal_project_301310/pages/homescreen.dart';
 import 'package:pawpal_project_301310/pages/registerscreen.dart';
@@ -16,6 +17,7 @@ class Loginscreen extends StatefulWidget {
 class _LoginscreenState extends State<Loginscreen> {
   bool checkBox = false;
   bool visible = true;
+  late User user;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -301,10 +303,13 @@ class _LoginscreenState extends State<Loginscreen> {
         .then((response) {
           if (response.statusCode == 200) {
             var jsonResponse = response.body;
-
             var resarray = jsonDecode(jsonResponse);
-            if (resarray['status'] == 'success') {
+
+            if (resarray['status'] == 'success' && resarray['data'] != null) {
+              user = User.fromJson(resarray['data'][0]);
+
               if (!mounted) return;
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text("Login successful"),
@@ -315,7 +320,7 @@ class _LoginscreenState extends State<Loginscreen> {
               // Navigate to home screen
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Homescreen()),
+                MaterialPageRoute(builder: (context) => Homescreen(user: user)),
               );
             } else {
               if (!mounted) return;
