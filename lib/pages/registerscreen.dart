@@ -315,6 +315,7 @@ class _RegisterscreenState extends State<Registerscreen> {
                 context,
                 MaterialPageRoute(builder: (context) => Loginscreen()),
               );
+              // failed register handling
             } else if (msgArray['status'] == "failed") {
               if (!mounted) return;
               SnackBar snackBar = SnackBar(
@@ -322,6 +323,7 @@ class _RegisterscreenState extends State<Registerscreen> {
                 backgroundColor: Colors.orange,
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
               // for duplicate email handling
             } else if (msgArray['status'] == "duplicate") {
               if (!mounted) return;
@@ -332,8 +334,10 @@ class _RegisterscreenState extends State<Registerscreen> {
                   backgroundColor: Colors.red,
                 ),
               );
+              //another error handling
             } else {
               if (!mounted) return;
+
               SnackBar snackBar = SnackBar(
                 content: Text(msgArray['message']),
                 backgroundColor: Colors.red,
