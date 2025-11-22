@@ -198,6 +198,7 @@ class _RegisterscreenState extends State<Registerscreen> {
       SnackBar snackBar = SnackBar(
         // pop message on the bottom of the screen
         content: Text("Please fill in all the fields."),
+        backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
@@ -207,6 +208,14 @@ class _RegisterscreenState extends State<Registerscreen> {
     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
       SnackBar snackBar = SnackBar(
         content: Text("Please enter a valid email address."),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
+    if (password.length < 6) {
+      SnackBar snackBar = SnackBar(
+        content: Text("Password must be at least 6 characters."),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
@@ -286,6 +295,7 @@ class _RegisterscreenState extends State<Registerscreen> {
 
             if (msgArray['status'] == "success") {
               if (!mounted) return;
+
               SnackBar snackBar = SnackBar(
                 content: Text(msgArray['message']),
                 backgroundColor: Colors.green,
@@ -304,6 +314,23 @@ class _RegisterscreenState extends State<Registerscreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Loginscreen()),
+              );
+            } else if (msgArray['status'] == "failed") {
+              if (!mounted) return;
+              SnackBar snackBar = SnackBar(
+                content: Text(msgArray['message']),
+                backgroundColor: Colors.orange,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              // for duplicate email handling
+            } else if (msgArray['status'] == "duplicate") {
+              if (!mounted) return;
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Email already registered"),
+                  backgroundColor: Colors.red,
+                ),
               );
             } else {
               if (!mounted) return;
