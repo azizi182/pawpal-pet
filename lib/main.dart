@@ -11,6 +11,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: Splashpage());
+    return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: const Color.fromARGB(255, 238, 176, 83),
+          foregroundColor: Colors.white,
+        ),
+      ),
+      home: Splashpage(),
+    );
   }
 }
