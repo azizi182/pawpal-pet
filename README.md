@@ -22,6 +22,7 @@ to use this system use must follow several step ;
   7. to store all image u must create new folder inside htdocs/lab_asg2/file_put_contents
 
 3.0 API explanation
+
 the fullname of API is application programming interface. it is a set rule to communication with different software.
 for example HTTP to access over the internet. in this project, PHP is a brech between Flutter (dart) and Mysql(Database).
 has several file of PHP
