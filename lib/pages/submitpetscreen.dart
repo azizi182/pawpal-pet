@@ -33,7 +33,14 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
   List<String> petTypes = ['Dog', 'Cat', 'Other'];
   String? selectedPetType = 'Cat';
 
-  List<String> category = ['Adoption', 'Donation', 'Help', 'Save', 'Other'];
+  List<String> category = [
+    'Adoption',
+    'Donation',
+    'Help',
+    'Sale',
+    'Save',
+    'Other',
+  ];
   String? selectedPetCategory = 'Adoption';
 
   @override
@@ -71,6 +78,7 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(10),
                     ),
+                    // check if image is empty or not
                     child: image.isEmpty
                         ? Center(
                             child: Image.asset("assets/images/cameraIcon.png"),
@@ -342,6 +350,14 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
       return;
     }
 
+    if (description.toString().length < 10) {
+      SnackBar snackBar = const SnackBar(
+        content: Text('Minimun 10 characters for description'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -351,7 +367,8 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
           TextButton(
             onPressed: () => {
               addPet(),
-              Navigator.push(
+              //Navigator.pop(context),
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => Mainscreen(user: widget.user),

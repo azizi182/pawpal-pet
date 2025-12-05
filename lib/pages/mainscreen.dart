@@ -57,17 +57,6 @@ class _MainscreenState extends State<Mainscreen> {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Homescreen(user: widget.user),
-                ),
-              );
-            },
-          ),
         ],
       ),
       body: Center(

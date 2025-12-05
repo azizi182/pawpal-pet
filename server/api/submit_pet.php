@@ -28,31 +28,23 @@ if ($conn->query($sqlinsertpet) === TRUE) {
     $image_paths = [];
 
     if (is_array($images)) {
-
     for ($i = 0; $i < count($images); $i++) {
 
         // decode/convert string to image
         $decodedImage = base64_decode($images[$i]);
-
         // file name: pet_5_1.png, pet_5_2.png, pet_5_3.png
         $fileName = "pet_" . $last_id . "_" . ($i + 1) . ".png";
-
         // server storage path
         $filePath = "../file_put_contents/" . $fileName;
-
         // save image file to server
         file_put_contents($filePath, $decodedImage);
-
         // store file name in array
         $image_paths[] = $fileName;
     }
-
 }
-
 // convert path file to json and update database
     $image_paths_json = json_encode($image_paths);
     $conn->query("UPDATE tbl_pets SET image_paths = '$image_paths_json' WHERE pet_id = $last_id");
-
     sendJsonResponse(['status' => 'success', 'message' => 'Successfully added']);
 } else {
     sendJsonResponse(['status' => 'failed', 'message' => 'Failed to add']);
