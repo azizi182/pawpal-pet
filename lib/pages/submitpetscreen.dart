@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:pawpal_project_301310/class/user.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
+import 'package:pawpal_project_301310/pages/mainscreen.dart';
 
 class Submitpetscreen extends StatefulWidget {
   final User? user;
@@ -19,7 +20,8 @@ class Submitpetscreen extends StatefulWidget {
 
 class _SubmitpetscreenState extends State<Submitpetscreen> {
   // declare variables
-  File? image;
+
+  List<File> image = [];
   late double height, width;
 
   late Position mypostion;
@@ -31,7 +33,7 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
   List<String> petTypes = ['Dog', 'Cat', 'Other'];
   String? selectedPetType = 'Cat';
 
-  List<String> category = ['Adoption', 'Donation', 'Sale', 'Other'];
+  List<String> category = ['Adoption', 'Donation', 'Help', 'Save', 'Other'];
   String? selectedPetCategory = 'Adoption';
 
   @override
@@ -61,18 +63,55 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
                     pickimagedialog();
                   },
                   child: Container(
+                    padding: const EdgeInsets.all(8.0),
                     height: height / 3,
                     alignment: Alignment.center,
                     width: width,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        image: image == null
-                            ? AssetImage('assets/images/cameraIcon.png')
-                            : FileImage(image!),
-                      ),
                     ),
+                    child: image.isEmpty
+                        ? Center(
+                            child: Image.asset("assets/images/cameraIcon.png"),
+                          )
+                        : Row(
+                            children: image.map((img) {
+                              return Expanded(
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: FileImage(img),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() => image.remove(img));
+                                        },
+                                        child: Container(
+                                          color: Colors.black54,
+                                          padding: EdgeInsets.all(2),
+                                          child: Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
                   ),
                 ),
                 SizedBox(height: 10.0),
@@ -168,7 +207,27 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
 
                 // submit button
                 SizedBox(height: 10.0),
-                ElevatedButton(onPressed: finishdialog, child: Text('Submit')),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 238, 176, 83),
+                    ),
+                    icon: const Icon(
+                      Icons.sentiment_very_satisfied_sharp,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        "Submit",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                    onPressed: finishdialog,
+                  ),
+                ),
               ],
             ),
           ),
@@ -210,22 +269,38 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
   }
 
   Future<void> openCamera() async {
+    if (image.length >= 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('You can only upload up to 3 images.')),
+      );
+      return;
+    }
+
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
-      image = File(pickedFile.path);
-      setState(() {});
+      setState(() {
+        image.add(File(pickedFile.path));
+      });
     }
   }
 
   Future<void> openGallery() async {
+    if (image.length >= 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('You can only upload up to 3 images.')),
+      );
+      return;
+    }
+
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      image = File(pickedFile.path);
-      setState(() {}); // only for mobile
+      setState(() {
+        image.add(File(pickedFile.path));
+      });
     }
   }
 
@@ -242,7 +317,7 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
         description.isEmpty ||
         address.isEmpty ||
         category.isEmpty ||
-        image == null) {
+        image.isEmpty) {
       SnackBar snackBar = SnackBar(
         // pop message on the bottom of the screen
         content: Text("Please fill in all the fields."),
@@ -274,7 +349,16 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
         content: Text("Are you sure you want to submit this pet?"),
         actions: [
           TextButton(
-            onPressed: () => {addPet(), Navigator.pop(context)},
+            onPressed: () => {
+              addPet(),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Mainscreen(user: widget.user),
+                ),
+              ),
+              Navigator.pop(context),
+            },
             child: Text("Submit"),
           ),
           TextButton(
@@ -318,7 +402,9 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
   }
 
   addPet() {
-    String base64Image = base64Encode(image!.readAsBytesSync());
+    List<String> base64Image = image.map((img) {
+      return base64Encode(img.readAsBytesSync());
+    }).toList();
     String name = petnameController.text;
     String description = petdescriptionController.text;
     http
@@ -333,7 +419,7 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
             'description': description,
             'latitude': mypostion.latitude.toString(),
             'longitude': mypostion.longitude.toString(),
-            'image': base64Image,
+            'image': jsonEncode(base64Image),
           },
         )
         .then((response) {
@@ -341,10 +427,12 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
           if (response.statusCode == 200) {
             var jsonResponse = response.body;
             var resarray = jsonDecode(jsonResponse);
+            print(resarray['status']);
+            print(resarray['message']);
             if (resarray['status'] == 'success') {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Pet submitted successfully"),
+                  content: Text(resarray['message']),
                   backgroundColor: Colors.green,
                 ),
               );

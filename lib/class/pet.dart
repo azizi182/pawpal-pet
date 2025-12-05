@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class petDetails {
   String? petId;
   String? userId;
@@ -8,6 +10,8 @@ class petDetails {
   String? latitude;
   String? longitude;
   String? date;
+  String? userName;
+  List<String> imagePaths = [];
 
   petDetails({
     required this.petId,
@@ -19,6 +23,8 @@ class petDetails {
     required this.latitude,
     required this.longitude,
     required this.date,
+    required this.userName,
+    required this.imagePaths,
   });
 
   petDetails.fromJson(Map<String, dynamic> json) {
@@ -31,6 +37,10 @@ class petDetails {
     latitude = json['lat'];
     longitude = json['lng'];
     date = json['date'];
+    userName = json['user_name'];
+    imagePaths = (json['image_paths'] != null && json['image_paths'] != '')
+        ? List<String>.from(jsonDecode(json['image_paths']))
+        : [];
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +54,8 @@ class petDetails {
     data['lat'] = latitude;
     data['lng'] = longitude;
     data['date'] = date;
+    data['user_name'] = userName;
+    data['image_paths'] = imagePaths;
     return data;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pawpal_project_301310/class/user.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
 import 'package:pawpal_project_301310/pages/homescreen.dart';
+import 'package:pawpal_project_301310/pages/mainscreen.dart';
 import 'package:pawpal_project_301310/pages/registerscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,10 @@ class _LoginscreenState extends State<Loginscreen> {
   late User user;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  void initState() {
+    super.initState();
+    loadPreferences();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -304,6 +309,8 @@ class _LoginscreenState extends State<Loginscreen> {
           if (response.statusCode == 200) {
             var jsonResponse = response.body;
             var resarray = jsonDecode(jsonResponse);
+            print(resarray['status']);
+            print(resarray['message']);
 
             if (resarray['status'] == 'success' && resarray['data'] != null) {
               user = User.fromJson(resarray['data'][0]);

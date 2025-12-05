@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
@@ -289,10 +290,12 @@ class _RegisterscreenState extends State<Registerscreen> {
         .then((response) {
           if (response.statusCode == 200) {
             var jsonResponse = response.body;
+
             var msgArray = jsonDecode(
               jsonResponse,
             ); // convert from json type(backend) to array msg (frontend)
-
+            print(msgArray['status']);
+            print(msgArray['message']);
             if (msgArray['status'] == "success") {
               if (!mounted) return;
 

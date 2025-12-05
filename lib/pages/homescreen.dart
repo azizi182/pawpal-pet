@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:pawpal_project_301310/class/pet.dart';
 import 'package:pawpal_project_301310/class/user.dart';
-import 'package:pawpal_project_301310/ipaddress.dart';
+import 'package:pawpal_project_301310/pages/loginscreen.dart';
+import 'package:pawpal_project_301310/pages/mainscreen.dart';
 import 'package:pawpal_project_301310/pages/submitpetscreen.dart';
 
 class Homescreen extends StatefulWidget {
@@ -16,357 +13,139 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  List<petDetails> petList = [];
-  late double screenWidth, screenHeight;
-  String status = "Loading...";
-
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-    if (screenWidth > 600) {
-      screenWidth = 600;
-    } else {
-      screenWidth = screenWidth;
-    }
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 218, 176),
+
       appBar: AppBar(
-        title: Text('Home Page'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              loadData();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Submitpetscreen(user: widget.user),
-                ),
-              );
-            },
-          ),
-        ],
+        title: const Text(
+          'Home Screen',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        elevation: 2,
       ),
-      body: Center(
+
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            petList.isEmpty
-                ? const Text('No pets found.')
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: petList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 6,
-                            horizontal: 8,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // IMAGE
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                    width:
-                                        screenWidth * 0.28, // more responsive
-                                    height:
-                                        screenWidth *
-                                        0.22, // balanced aspect ratio
-                                    color: Colors.grey[200],
-                                    child: Image.network(
-                                      '${ipaddress.baseUrl}/lab_asg2/file_put_contents/pet_${petList[index].petId}.png',
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                            return const Icon(
-                                              Icons.broken_image,
-                                              size: 60,
-                                              color: Colors.grey,
-                                            );
-                                          },
-                                    ),
-                                  ),
-                                ),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
 
-                                const SizedBox(width: 12),
-
-                                // detail section
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // pet name
-                                      Text(
-                                        petList[index].petName.toString(),
-                                        style: const TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-
-                                      const SizedBox(height: 4),
-
-                                      // pet type
-                                      Text(
-                                        petList[index].petType.toString(),
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black87,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-
-                                      const SizedBox(height: 6),
-
-                                      // DISTRICT TAG
-                                    ],
-                                  ),
-                                ),
-
-                                // TRAILING ARROW BUTTON
-                                IconButton(
-                                  onPressed: () {
-                                    showDetailsPet(index);
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 18,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+              elevation: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.emoji_people_rounded,
+                      size: 40,
+                      color: Color.fromARGB(255, 141, 102, 25),
                     ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Text(
+                        "Welcome, ${widget.user?.userName ?? 'Guest'}\n your id is ${widget.user?.userId ?? '-'}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            SizedBox(height: 50),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 238, 176, 83),
+                ),
+                icon: const Icon(Icons.add, size: 24, color: Colors.white),
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    "Submit a Pet",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
-            Text('Welcome, ${widget.user?.userName} !'),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Submitpetscreen(user: widget.user),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            SizedBox(height: 15),
+
+            // LIST ANIMALS BUTTON
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 238, 176, 83),
+                ),
+                icon: const Icon(Icons.list_alt, size: 24, color: Colors.white),
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    "List Animals",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Mainscreen(user: widget.user),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            // LOGOUT BUTTON (RED)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                icon: const Icon(Icons.logout, size: 24, color: Colors.white),
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Loginscreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  void loadData() {
-    http.get(Uri.parse('${ipaddress.baseUrl}/lab_asg2/api/load_pet.php')).then((
-      response,
-    ) {
-      if (response.statusCode == 200) {
-        var jsonResponse = response.body;
-        var data = jsonDecode(jsonResponse);
-        petList.clear();
-        for (var item in data['data']) {
-          petList.add(petDetails.fromJson(item));
-        }
-        setState(() {
-          status = "";
-        });
-        // print(jsonResponse);
-      } else {
-        setState(() {
-          status = "Failed to load data";
-        });
-      }
-    });
-  }
-
-  void showDetailsPet(int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(petList[index].petName.toString()),
-          content: SizedBox(
-            width: screenWidth,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    child: Image.network(
-                      '${ipaddress.baseUrl}/lab_asg2/file_put_contents/pet_${petList[index].petId}.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(
-                          Icons.broken_image,
-                          size: 128,
-                          color: Colors.grey,
-                        );
-                      },
-                    ),
-                  ),
-
-                  SizedBox(height: 10),
-                  Table(
-                    border: TableBorder.all(
-                      color: Colors.grey,
-                      width: 1.0,
-                      style: BorderStyle.solid,
-                    ),
-                    columnWidths: {
-                      0: FixedColumnWidth(100.0),
-                      1: FlexColumnWidth(),
-                    },
-                    children: [
-                      TableRow(
-                        children: [
-                          TableCell(
-                            // use table to detail information
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Name'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(petList[index].petName.toString()),
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Description'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                petList[index].description.toString(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Type'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(petList[index].petType.toString()),
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Category'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(petList[index].category.toString()),
-                            ),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Location'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Lat: ${petList[index].latitude}, Lng: ${petList[index].longitude}',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Owner'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(petList[index].userId.toString()),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
