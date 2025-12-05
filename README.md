@@ -31,7 +31,8 @@ has several file of PHP
 
 4.0 sample JSON
   1. load_pet.php
-<img width="782" height="516" alt="image" src="https://github.com/user-attachments/assets/8aefd7e1-9cc1-461e-866b-3b5f64d01121" />
+<img width="782" height="544" alt="image" src="https://github.com/user-attachments/assets/5f48bb2d-5fbd-4f05-bc86-18c1f10a2e02" />
+
 
   2. submit_pet.php
 <img width="983" height="711" alt="image" src="https://github.com/user-attachments/assets/529e12b2-b252-4aca-8825-cd59b6cac29e" />
