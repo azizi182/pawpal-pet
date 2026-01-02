@@ -1,5 +1,5 @@
-# pawpal_project_301310
-
+# pawpal_project.
+Midterm project
 1.0 Introduction
 
 the latest version is updated to mid-term
@@ -37,4 +37,7 @@ has several file of PHP
   2. submit_pet.php
 <img width="983" height="711" alt="image" src="https://github.com/user-attachments/assets/529e12b2-b252-4aca-8825-cd59b6cac29e" />
 
+<br>
+
+Final Project
 
