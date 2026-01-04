@@ -3,14 +3,18 @@ import 'dart:convert';
 class petDetails {
   String? petId;
   String? userId;
+  String? userName;
   String? petName;
   String? petType;
+  String? petGender;
+  String? petAge;
+  String? petHealth;
   String? category;
   String? description;
   String? latitude;
   String? longitude;
   String? date;
-  String? userName;
+
   List<String> imagePaths = [];
 
   petDetails({
@@ -18,6 +22,9 @@ class petDetails {
     required this.userId,
     required this.petName,
     required this.petType,
+    required this.petGender,
+    required this.petAge,
+    required this.petHealth,
     required this.category,
     required this.description,
     required this.latitude,
@@ -32,6 +39,9 @@ class petDetails {
     userId = json['user_id'];
     petName = json['pet_name'];
     petType = json['pet_type'];
+    petGender = json['pet_gender'];
+    petAge = json['pet_age'];
+    petHealth = json['pet_health'];
     category = json['category'];
     description = json['description'];
     latitude = json['lat'];
@@ -49,6 +59,9 @@ class petDetails {
     data['user_id'] = userId;
     data['pet_name'] = petName;
     data['pet_type'] = petType;
+    data['pet_gender'] = petGender;
+    data['pet_age'] = petAge;
+    data['pet_health'] = petHealth;
     data['category'] = category;
     data['description'] = description;
     data['lat'] = latitude;

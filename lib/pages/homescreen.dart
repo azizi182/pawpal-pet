@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pawpal_project_301310/class/user.dart';
+import 'package:pawpal_project_301310/pages/donationscreen.dart';
 import 'package:pawpal_project_301310/pages/loginscreen.dart';
 import 'package:pawpal_project_301310/pages/mainscreen.dart';
+import 'package:pawpal_project_301310/pages/mypetscreen.dart';
+import 'package:pawpal_project_301310/pages/profilescreen.dart';
 import 'package:pawpal_project_301310/pages/submitpetscreen.dart';
 
 class Homescreen extends StatefulWidget {
@@ -13,6 +16,10 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  bool isGuest() {
+    return widget.user == null || widget.user!.userId == "0";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +58,7 @@ class _HomescreenState extends State<Homescreen> {
                     const SizedBox(width: 15),
                     Expanded(
                       child: Text(
-                        "Welcome, ${widget.user?.userName ?? 'Guest'}\n your id is ${widget.user?.userId ?? '-'}",
+                        "Welcome, ${widget.user?.userName ?? 'Guest'}\n your id is ${widget.user?.userId ?? '0'}",
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
@@ -64,6 +71,42 @@ class _HomescreenState extends State<Homescreen> {
             ),
 
             SizedBox(height: 50),
+
+            //profile
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 238, 176, 83),
+                ),
+                icon: const Icon(
+                  Icons.person_3_outlined,
+                  size: 24,
+                  color: Colors.white,
+                ),
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    "My Profile",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                onPressed: () {
+                  if (isGuest()) {
+                    showGuestDialog();
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Profilescreen(user: widget.user),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+
+            SizedBox(height: 15),
 
             SizedBox(
               width: double.infinity,
@@ -80,19 +123,24 @@ class _HomescreenState extends State<Homescreen> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Submitpetscreen(user: widget.user),
-                    ),
-                  );
+                  if (isGuest()) {
+                    showGuestDialog();
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            Submitpetscreen(user: widget.user),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
 
             SizedBox(height: 15),
 
-            // LIST ANIMALS BUTTON
+            // All LIST ANIMALS BUTTON
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -103,7 +151,7 @@ class _HomescreenState extends State<Homescreen> {
                 label: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    "List Animals",
+                    "All List Animals",
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
@@ -117,6 +165,8 @@ class _HomescreenState extends State<Homescreen> {
                 },
               ),
             ),
+
+            SizedBox(height: 15),
 
             const SizedBox(height: 15),
 
@@ -145,6 +195,35 @@ class _HomescreenState extends State<Homescreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  //dialog guest
+  void showGuestDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Registration Required"),
+        content: const Text(
+          "You must register or login to access this feature.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const Loginscreen()),
+              );
+            },
+            child: const Text("Register / Login"),
+          ),
+        ],
       ),
     );
   }

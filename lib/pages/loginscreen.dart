@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pawpal_project_301310/class/user.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
 import 'package:pawpal_project_301310/pages/homescreen.dart';
-import 'package:pawpal_project_301310/pages/mainscreen.dart';
+//import 'package:pawpal_project_301310/pages/mainscreen.dart';
 import 'package:pawpal_project_301310/pages/registerscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +21,7 @@ class _LoginscreenState extends State<Loginscreen> {
   late User user;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  @override
   void initState() {
     super.initState();
     loadPreferences();
@@ -245,7 +246,7 @@ class _LoginscreenState extends State<Loginscreen> {
                       );
                     },
                     child: Text(
-                      'Dont have an account? Sign up.?',
+                      'Dont have an account? Sign up',
                       style: TextStyle(color: Colors.orange, fontSize: 16),
                     ),
                   ),
@@ -302,7 +303,7 @@ class _LoginscreenState extends State<Loginscreen> {
     }
     http
         .post(
-          Uri.parse('${ipaddress.baseUrl}/lab_asg2/api/login_user.php'),
+          Uri.parse('${ipaddress.baseUrl}/api/login_user.php'),
           body: {'email': email, 'password': password},
         )
         .then((response) {

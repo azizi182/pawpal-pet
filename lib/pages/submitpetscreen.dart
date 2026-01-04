@@ -24,24 +24,29 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
   List<File> image = [];
   late double height, width;
 
-  late Position mypostion;
+  Position? mypostion;
 
   TextEditingController petnameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController petdescriptionController = TextEditingController();
+  TextEditingController petageController = TextEditingController();
+  TextEditingController pethealthController = TextEditingController();
 
-  List<String> petTypes = ['Dog', 'Cat', 'Other'];
+  List<String> petTypes = ['Dog', 'Cat', 'Horse', 'Rabbit', 'Other'];
   String? selectedPetType = 'Cat';
 
   List<String> category = [
     'Adoption',
-    'Donation',
-    'Help',
+    'Donation Money',
+    'Donation Medical',
+    'Lost',
     'Sale',
-    'Save',
     'Other',
   ];
   String? selectedPetCategory = 'Adoption';
+
+  List<String> petGenders = ['Male', 'Female'];
+  String? selectedPetGender = 'Male';
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +157,48 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
                     });
                   },
                 ),
+
                 SizedBox(height: 10),
+
+                //pet gender
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Pet Gender',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: petGenders.map((String selectedGender) {
+                    return DropdownMenuItem<String>(
+                      value: selectedGender,
+                      child: Text(selectedGender),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedPetGender = newValue!;
+                    });
+                  },
+                ),
+                SizedBox(height: 10),
+
+                //age
+                TextField(
+                  controller: petageController,
+                  decoration: InputDecoration(
+                    labelText: 'Pet Age',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10.0),
+
+                //health
+                TextField(
+                  controller: pethealthController,
+                  decoration: InputDecoration(
+                    labelText: 'Pet Health',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10.0),
 
                 //  input: address (textfield and live location)
                 TextField(
@@ -169,8 +215,8 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
                         // print(mypostion.longitude);
                         List<Placemark> placemarks =
                             await placemarkFromCoordinates(
-                              mypostion.latitude,
-                              mypostion.longitude,
+                              mypostion!.latitude,
+                              mypostion!.longitude,
                             );
                         Placemark place = placemarks[0];
                         addressController.text =
@@ -315,6 +361,9 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
   void finishdialog() {
     String name = petnameController.text;
     String type = selectedPetType.toString();
+    String gender = selectedPetGender.toString();
+    String age = petageController.text;
+    String health = pethealthController.text;
     String category = selectedPetCategory.toString();
     String address = addressController.text;
     String description = petdescriptionController.text;
@@ -322,6 +371,9 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
     // handling error
     if (name.isEmpty ||
         type.isEmpty ||
+        gender.isEmpty ||
+        age.isEmpty ||
+        health.isEmpty ||
         description.isEmpty ||
         address.isEmpty ||
         category.isEmpty ||
@@ -342,14 +394,12 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
-    if (mypostion.latitude.isNaN || mypostion.longitude.isNaN) {
-      SnackBar snackBar = const SnackBar(
-        content: Text('Please select an address'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    if (mypostion == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select location')));
       return;
     }
-
     if (description.toString().length < 10) {
       SnackBar snackBar = const SnackBar(
         content: Text('Minimun 10 characters for description'),
@@ -365,16 +415,9 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
         content: Text("Are you sure you want to submit this pet?"),
         actions: [
           TextButton(
-            onPressed: () => {
-              addPet(),
-              //Navigator.pop(context),
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Mainscreen(user: widget.user),
-                ),
-              ),
-              Navigator.pop(context),
+            onPressed: () async {
+              Navigator.pop(context); // close dialog
+              addPet();
             },
             child: Text("Submit"),
           ),
@@ -418,7 +461,7 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
     return await Geolocator.getCurrentPosition();
   }
 
-  addPet() {
+  void addPet() {
     List<String> base64Image = image.map((img) {
       return base64Encode(img.readAsBytesSync());
     }).toList();
@@ -426,16 +469,20 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
     String description = petdescriptionController.text;
     http
         .post(
-          Uri.parse('${ipaddress.baseUrl}/lab_asg2/api/submit_pet.php'),
+          Uri.parse('${ipaddress.baseUrl}/api/submit_pet.php'),
 
           body: {
             'user_id': widget.user?.userId,
+            'user_name': widget.user?.userName,
             'pet_name': name,
             'pet_type': selectedPetType,
+            'pet_gender': selectedPetGender,
+            'pet_age': petageController.text,
+            'pet_health': pethealthController.text,
             'pet_category': selectedPetCategory,
             'description': description,
-            'latitude': mypostion.latitude.toString(),
-            'longitude': mypostion.longitude.toString(),
+            'latitude': mypostion!.latitude.toString(),
+            'longitude': mypostion!.longitude.toString(),
             'image': jsonEncode(base64Image),
           },
         )
@@ -446,7 +493,10 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
             var resarray = jsonDecode(jsonResponse);
             print(resarray['status']);
             print(resarray['message']);
-            if (resarray['status'] == 'success') {
+            if (resarray['status'] == 'success' &&
+                resarray['data'] != null &&
+                resarray['data'].isNotEmpty) {
+              if (!mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(resarray['message']),

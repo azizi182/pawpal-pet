@@ -278,7 +278,7 @@ class _RegisterscreenState extends State<Registerscreen> {
 
     await http
         .post(
-          Uri.parse("${ipaddress.baseUrl}/lab_asg2/api/register_user.php"),
+          Uri.parse("${ipaddress.baseUrl}/api/register_user.php"),
           body: {
             // parameters to send to backend
             "name": name,
