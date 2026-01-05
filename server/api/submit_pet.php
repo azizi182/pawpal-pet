@@ -9,17 +9,21 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 }
 
 $user_id = $_POST['user_id'];
+$user_name = $_POST['user_name'];
 $pet_name = $_POST['pet_name'];
 $pet_type = $_POST['pet_type'];
+$pet_gender = $_POST['pet_gender'];
+$pet_age = $_POST['pet_age'];
+$pet_health = $_POST['pet_health'];
 $category = $_POST['pet_category'];
 $description = addslashes($_POST['description']);
 $latitude = $_POST['latitude'];
 $longitude = $_POST['longitude'];
 
-$sqlinsertpet = "INSERT INTO tbl_pets (user_id, pet_name, pet_type, category, description, image_paths, lat, lng)
-VALUES ('$user_id', '$pet_name', '$pet_type', '$category', '$description', '', '$latitude', '$longitude')";
+$sqlinsertpet = "INSERT INTO tbl_pets (user_id, user_name, pet_name, pet_type, pet_gender, pet_age, pet_health, category, description, image_paths, lat, lng)
+VALUES ('$user_id','$user_name', '$pet_name', '$pet_type','$pet_gender', '$pet_age', '$pet_health', '$category', '$description', '', '$latitude', '$longitude')";
 
-
+try{
 if ($conn->query($sqlinsertpet) === TRUE) {
 
     $last_id = $conn->insert_id;
@@ -28,28 +32,39 @@ if ($conn->query($sqlinsertpet) === TRUE) {
     $image_paths = [];
 
     if (is_array($images)) {
+
     for ($i = 0; $i < count($images); $i++) {
 
         // decode/convert string to image
         $decodedImage = base64_decode($images[$i]);
+
         // file name: pet_5_1.png, pet_5_2.png, pet_5_3.png
         $fileName = "pet_" . $last_id . "_" . ($i + 1) . ".png";
+
         // server storage path
         $filePath = "../file_put_contents/" . $fileName;
+
         // save image file to server
         file_put_contents($filePath, $decodedImage);
+
         // store file name in array
         $image_paths[] = $fileName;
     }
+
 }
+
 // convert path file to json and update database
     $image_paths_json = json_encode($image_paths);
     $conn->query("UPDATE tbl_pets SET image_paths = '$image_paths_json' WHERE pet_id = $last_id");
+
     sendJsonResponse(['status' => 'success', 'message' => 'Successfully added']);
 } else {
     sendJsonResponse(['status' => 'failed', 'message' => 'Failed to add']);
 }
-
+}
+catch(Exception $e){
+    sendJsonResponse(['status' => 'failed', 'message' => $e->getMessage()]);
+}
 function sendJsonResponse($array)
 {
     header('Content-Type: application/json');

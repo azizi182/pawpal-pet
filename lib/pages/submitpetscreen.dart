@@ -493,9 +493,7 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
             var resarray = jsonDecode(jsonResponse);
             print(resarray['status']);
             print(resarray['message']);
-            if (resarray['status'] == 'success' &&
-                resarray['data'] != null &&
-                resarray['data'].isNotEmpty) {
+            if (resarray['status'] == 'success') {
               if (!mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

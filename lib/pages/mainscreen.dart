@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:pawpal_project_301310/class/pet.dart';
 import 'package:pawpal_project_301310/class/user.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
+import 'package:pawpal_project_301310/pages/donationscreen.dart';
 //import 'package:pawpal_project_301310/pages/homescreen.dart';
 import 'package:pawpal_project_301310/pages/submitpetscreen.dart';
 
@@ -512,21 +513,28 @@ class _MainscreenState extends State<Mainscreen> {
                   },
                   child: Text('Request to Adopt'),
                 ),
-
-            if (petList[index].category == 'Donation')
-              TextButton(
-                onPressed: () {
-                  //  handle request adopt
-                },
-                child: Text('Donate Money'),
-              ),
-            if (petList[index].category == 'Donation Medical')
-              TextButton(
-                onPressed: () {
-                  //  handle request adopt
-                },
-                child: Text('Donate Medical'),
-              ),
+            if (isGuest() != true)
+              if (petList[index].category == 'Donation')
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Donationscreen(user: widget.user),
+                      ),
+                    );
+                  },
+                  child: Text('Donate Money'),
+                ),
+            if (isGuest() != true)
+              if (petList[index].category == 'Donation Medical')
+                TextButton(
+                  onPressed: () {
+                    //  handle request adopt
+                  },
+                  child: Text('Donate Medical'),
+                ),
           ],
         );
       },
