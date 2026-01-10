@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pawpal_project_301310/class/user.dart';
-import 'package:pawpal_project_301310/pages/donationscreen.dart';
+import 'package:pawpal_project_301310/pages/mydonationscreen.dart';
 import 'package:pawpal_project_301310/pages/loginscreen.dart';
 import 'package:pawpal_project_301310/pages/mainscreen.dart';
 import 'package:pawpal_project_301310/pages/mypetscreen.dart';

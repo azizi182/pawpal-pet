@@ -28,7 +28,7 @@ class _MypetscreenState extends State<Mypetscreen> {
   @override
   void initState() {
     super.initState();
-    loadmyData();
+    loadMyPet();
   }
 
   @override
@@ -47,7 +47,7 @@ class _MypetscreenState extends State<Mypetscreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              loadmyData();
+              loadMyPet();
             },
           ),
           IconButton(
@@ -157,17 +157,6 @@ class _MypetscreenState extends State<Mypetscreen> {
 
                                             const SizedBox(height: 4),
                                             Text(
-                                              "type: ${petList[index].petType}",
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black87,
-                                              ),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-
-                                            const SizedBox(height: 4),
-                                            Text(
                                               "Age: ${petList[index].petAge} years",
                                               style: const TextStyle(
                                                 fontSize: 14,
@@ -197,27 +186,7 @@ class _MypetscreenState extends State<Mypetscreen> {
                                       Column(
                                         children: [
                                           //edit pet icon
-                                          IconButton(
-                                            onPressed: () {
-                                              // petDetails mypet = petDetails
-                                              //     .fromJson(
-                                              //       petList[index].toJson(),
-                                              //     );
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(
-                                              //     builder: (context) =>
-                                              //         Editpetscreen(
-                                              //           mypet: mypet,
-                                              //         ),
-                                              //   ),
-                                              // );
-                                            },
-                                            icon: const Icon(
-                                              Icons.edit,
-                                              size: 18,
-                                            ),
-                                          ),
+
                                           //delete pet icon
                                           IconButton(
                                             onPressed: () {
@@ -254,7 +223,7 @@ class _MypetscreenState extends State<Mypetscreen> {
     );
   }
 
-  void loadmyData() {
+  void loadMyPet() {
     setState(() {
       petList.clear();
     });
@@ -638,15 +607,15 @@ class _MypetscreenState extends State<Mypetscreen> {
           content: const Text("Are you sure you want to delete this pet?"),
           actions: [
             TextButton(
-              child: const Text("Cancel"),
+              child: const Text("Delete"),
               onPressed: () {
+                deletePet(index);
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text("Delete"),
+              child: Text("Cancel", style: TextStyle(color: Colors.red)),
               onPressed: () {
-                deletePet(index);
                 Navigator.of(context).pop();
               },
             ),
@@ -671,7 +640,7 @@ class _MypetscreenState extends State<Mypetscreen> {
             var jsonResponse = response.body;
             var resarray = jsonDecode(jsonResponse);
             if (resarray['status'] == 'success') {
-              loadmyData();
+              loadMyPet();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text("Pet deleted successfully"),

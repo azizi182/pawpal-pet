@@ -5,10 +5,13 @@ class Adopt {
   String? ownerId;
   String? petId;
   String? userId;
+
   String? adoptName;
   String? adoptMsg;
   String? adoptStatus;
+
   String? ownerName;
+
   String? petName;
   String? petType;
   String? petGender;

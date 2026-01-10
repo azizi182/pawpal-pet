@@ -19,6 +19,8 @@
     $phone = $_POST['phone'];
     $password = $_POST['password'];
     $hashed_password = sha1($password); // change to hashed password for security
+    $user_picture = null;
+    $user_wallet = 0;
     
 
     // Check if email already exists
@@ -32,8 +34,8 @@
     }
     
     // sql to insert data
-    $sqlreg = $sqlreg = "INSERT INTO `tbl_users` (`user_name`, `user_email`, `user_password`, `user_phone`)
-    VALUES ('$name', '$email', '$hashed_password', '$phone')";
+    $sqlreg = $sqlreg = "INSERT INTO `tbl_users` (`user_name`, `user_email`, `user_password`, `user_phone`, `user_picture`, `user_wallet`)
+    VALUES ('$name', '$email', '$hashed_password', '$phone' , '$user_picture', '$user_wallet')";
 
     try{
     //to popup message

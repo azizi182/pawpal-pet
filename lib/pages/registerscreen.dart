@@ -236,15 +236,16 @@ class _RegisterscreenState extends State<Registerscreen> {
         content: Text("Are you sure you want to register this account?"),
         actions: [
           TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+
+          TextButton(
             onPressed: () => {
               registerUser(name, email, password, phone),
               Navigator.pop(context),
             },
             child: Text("Register"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
           ),
         ],
       ),

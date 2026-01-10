@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:pawpal_project_301310/class/donation.dart';
 import 'package:pawpal_project_301310/class/pet.dart';
 import 'package:pawpal_project_301310/class/user.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
-import 'package:pawpal_project_301310/pages/donationscreen.dart';
+import 'package:pawpal_project_301310/pages/makepayment.dart';
+import 'package:pawpal_project_301310/pages/mydonationscreen.dart';
 //import 'package:pawpal_project_301310/pages/homescreen.dart';
 import 'package:pawpal_project_301310/pages/submitpetscreen.dart';
 
@@ -22,6 +24,7 @@ class _MainscreenState extends State<Mainscreen> {
   late double screenWidth, screenHeight;
   String status = "Loading...";
 
+  //pet type
   List<String> petTypes = ['Dog', 'Cat', 'Horse', 'Rabbit', 'Other'];
   String? selectedPetType = 'Cat';
   late petDetails selectedPet;
@@ -30,6 +33,20 @@ class _MainscreenState extends State<Mainscreen> {
     return widget.user == null || widget.user!.userId == "0";
   }
 
+  //amount donate
+  List<String> money = [
+    '5',
+    '10',
+    '15',
+    '20',
+    '25',
+    '30',
+    '35',
+    '40',
+    '45',
+    '50',
+  ];
+  String? selectedMoney = "0";
   @override
   void initState() {
     super.initState();
@@ -507,33 +524,42 @@ class _MainscreenState extends State<Mainscreen> {
                 TextButton(
                   onPressed: () {
                     selectedPet = petList[index];
-                    showAdoptDialog();
-                    // Navigator.pop(context);
                     //  handle request adopt
+                    showAdoptDialog();
                   },
                   child: Text('Request to Adopt'),
                 ),
             if (isGuest() != true)
-              if (petList[index].category == 'Donation')
+              if (petList[index].category == 'Donation Money' &&
+                  widget.user?.userId != petList[index].userId)
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    //make payment
+                    selectedPet = petList[index];
+                    Navigator.of(context).pop();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Donationscreen(user: widget.user),
+                        builder: (context) => Makepayment(
+                          mode: "donate",
+                          user: widget.user,
+                          pet: selectedPet,
+                        ),
                       ),
                     );
                   },
                   child: Text('Donate Money'),
                 ),
             if (isGuest() != true)
-              if (petList[index].category == 'Donation Medical')
+              if (petList[index].category == 'Donation Medical/Food' &&
+                  widget.user?.userId != petList[index].userId)
                 TextButton(
                   onPressed: () {
-                    //  handle request adopt
+                    selectedPet = petList[index];
+                    //  handle donate medical/food
+                    showDonateFoodMedicalDialog();
                   },
-                  child: Text('Donate Medical'),
+                  child: Text('Donate Medical/Food'),
                 ),
           ],
         );
@@ -602,9 +628,7 @@ class _MainscreenState extends State<Mainscreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Color.fromARGB(255, 238, 176, 83),
-                      ),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
                       onPressed: () => Navigator.pop(context),
                       child: const Text("Cancel"),
                     ),
@@ -689,9 +713,7 @@ class _MainscreenState extends State<Mainscreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Color.fromARGB(255, 238, 176, 83),
-                      ),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
                       onPressed: () => Navigator.pop(context),
                       child: const Text("Cancel"),
                     ),
@@ -729,7 +751,6 @@ class _MainscreenState extends State<Mainscreen> {
   }
 
   //adoption
-
   void showAdoptDialog() {
     TextEditingController msgController = TextEditingController();
 
@@ -782,9 +803,7 @@ class _MainscreenState extends State<Mainscreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Color.fromARGB(255, 238, 176, 83),
-                      ),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
                       onPressed: () => Navigator.pop(context),
                       child: const Text("Cancel"),
                     ),
@@ -848,5 +867,120 @@ class _MainscreenState extends State<Mainscreen> {
         });
   }
 
-  //donation
+  //donation food a medical
+  void showDonateFoodMedicalDialog() {
+    TextEditingController donateController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // TITLE
+                const Text(
+                  "Description of items to donate",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                ),
+
+                const SizedBox(height: 12),
+
+                // SEARCH FIELD
+                TextField(
+                  controller: donateController,
+                  autofocus: true,
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (value) {
+                    submitDonate(value);
+                  },
+                  decoration: InputDecoration(
+                    hintText: "e.g. I want to give a food and medicine",
+
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // ACTION BUTTONS
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Cancel"),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 238, 176, 83),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        submitDonate(donateController.text);
+                      },
+
+                      child: const Text("Donete now"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void submitDonate(String desc) {
+    http
+        .post(
+          Uri.parse('${ipaddress.baseUrl}/api/update_donation_food.php'),
+          body: {
+            'user_id': widget.user?.userId,
+            'pet_id': selectedPet?.petId,
+            'desc': desc,
+          },
+        )
+        .then((required) {
+          if (required.statusCode == 200) {
+            var resarray = jsonDecode(required.body);
+            if (resarray['status'] == 'success') {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Message sent successfully"),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            } else {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(resarray['message']),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
+        });
+  }
 }

@@ -8,7 +8,7 @@ import 'package:pawpal_project_301310/class/user.dart';
 import 'package:pawpal_project_301310/ipaddress.dart';
 import 'package:pawpal_project_301310/pages/approvedscreen.dart';
 import 'package:pawpal_project_301310/pages/approvescreen.dart';
-import 'package:pawpal_project_301310/pages/donationscreen.dart';
+import 'package:pawpal_project_301310/pages/mydonationscreen.dart';
 import 'package:pawpal_project_301310/pages/mypetscreen.dart';
 
 class Profilescreen extends StatefulWidget {
@@ -198,13 +198,13 @@ class _ProfilescreenState extends State<Profilescreen> {
 
             //My Donation
             _buildSection(
-              title: 'My Donation',
+              title: 'My Wallet & Donations',
               icon: Icons.attach_money,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Donationscreen(user: widget.user),
+                    builder: (context) => Mydonationscreen(user: widget.user),
                   ),
                 );
               },
@@ -344,7 +344,7 @@ class _ProfilescreenState extends State<Profilescreen> {
     http
         .get(
           Uri.parse(
-            '${ipaddress.baseUrl}/api/get_my_profile.php?user_id=${widget.user!.userId}',
+            '${ipaddress.baseUrl}/api/get_my_profile.php?user_id=${widget.user?.userId}',
           ),
         )
         .then((response) {
@@ -369,7 +369,6 @@ class _ProfilescreenState extends State<Profilescreen> {
               setState(() {});
             }
           }
-          // Handle successful login here
         });
   }
 }

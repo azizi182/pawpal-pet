@@ -24,6 +24,7 @@ class _ApprovedscreenState extends State<Approvedscreen> {
     fetchListAdopt();
   }
 
+  // get approved adoption requests from the server
   void fetchListAdopt() async {
     setState(() {
       loading = true;
@@ -140,6 +141,7 @@ class _ApprovedscreenState extends State<Approvedscreen> {
     );
   }
 
+  //make widget usable for status chip
   Widget buildStatusChip(String? status) {
     Color bgColor;
     IconData icon;

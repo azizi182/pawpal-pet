@@ -24,6 +24,7 @@ class _ApprovescreenState extends State<Approvescreen> {
     fetchRequests();
   }
 
+  // get pending adoption requests from the server
   void fetchRequests() async {
     setState(() {
       loading = true;
@@ -52,6 +53,7 @@ class _ApprovescreenState extends State<Approvescreen> {
         });
   }
 
+  // update adoption request status
   void updateRequest(String? adoptId, String action) async {
     final response = await http
         .post(

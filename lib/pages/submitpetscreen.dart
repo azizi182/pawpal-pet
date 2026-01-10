@@ -38,9 +38,8 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
   List<String> category = [
     'Adoption',
     'Donation Money',
-    'Donation Medical',
+    'Donation Medical/Food',
     'Lost',
-    'Sale',
     'Other',
   ];
   String? selectedPetCategory = 'Adoption';
@@ -415,15 +414,15 @@ class _SubmitpetscreenState extends State<Submitpetscreen> {
         content: Text("Are you sure you want to submit this pet?"),
         actions: [
           TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel", style: TextStyle(color: Colors.red)),
+          ),
+          TextButton(
             onPressed: () async {
               Navigator.pop(context); // close dialog
               addPet();
             },
             child: Text("Submit"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
           ),
         ],
       ),

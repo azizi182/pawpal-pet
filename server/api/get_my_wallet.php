@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $user_id = $_GET['user_id'];
 
     $sqluser = "SELECT 
-        *
+        user_wallet
         FROM tbl_users 
         WHERE user_id = '$user_id'";
 
