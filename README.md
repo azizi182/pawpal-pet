@@ -1,3 +1,12 @@
+Final Project
+
+
+
+
+
+
+
+
 # pawpal_project.
 Midterm project
 1.0 Introduction
@@ -39,5 +48,5 @@ has several file of PHP
 
 <br>
 
-Final Project
+
 
