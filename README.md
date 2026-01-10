@@ -44,7 +44,6 @@ is a php file for backend which is bridge between frontend and database.
 |------|------|-------|-------|
 | Connection with database | | | |
 | dbconnect.php |  | servername, username, password, dbname | for connection with a database in my sql |
-
 | User Management | | | |
 | login_user.php  | POST | email, password | Login in a user to application and return the data of user |
 | register_user.php  | POST | email, name, phone, password, user_pciture, user_wallet  | Register a new user |
@@ -54,19 +53,16 @@ is a php file for backend which is bridge between frontend and database.
 | get_my_wallet.php  | GET | user_id | To get amount of wallet user have and return it. |
 | get_my_donation.php  | GET | user_id | To get amount of wallet user have and return it. |
 | get_my_pet.php  | GET | user_id | To get amount of wallet user have and return it. |
-
 | Pet Management | | | |
 | submit_pet.php  | POST | user_id, user_name, pet_name, pet_type, pet_gender, pet_age, pet_health, pet_category, description, latitude, longitude, image |To insert a new data about pet into tbl_pets and return succesful or not |
 | load_pet.php  | GET | search | To get all data about pet based on query for search |
 | get_my_pet.php  | GET | user_id | To get a detail about the owner of pet |
 | delete_pet.php  | GET | user_id, pet_id | To delete the detail of selected pet |
-
 | Pet Management - Adoption | | | |
 | get_adopt.php  | GET | owner_id | To get the detail of pet adoption (owner pet) . |
 | get_adopt_approved.php  | GET | user_id | To get the detail about thier request a adopt and a status is approve or rejected. |
 | adopt_pet.php  | POST | user_id, oet_id, msg, status is Pending | to insert a data of adoption into tbl_adoption. |
 | update_adopt.php  | POST | adopt_id, action | the owner of pet update the adoption is accepted or reject |
-
 | Pet Management - Donation | | | |
 | update_payment.php (mode: donate)  | POST | user_id, pet_id, amount, mode | To donate a amount. |
 | update_donation_food.php  | POST | user_id, desc, pet_id | To insert data into tbl_doantion about a donation food or medical. |
